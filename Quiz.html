@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>PC Deconstructor Quiz</title>
+	<meta charset="utf-8" />
+    <script language="JavaScript"></script>
+
+    <style>
+        h3 {
+            color: white;
+            font-size: 3em;
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        h4 {
+            font-size: x-large;
+            color: white;
+            margin-left: 20px;
+            text-decoration: underline;
+        }
+
+        div {
+            color: white;
+            margin-left: 20px;
+        }
+
+        li {
+            margin-top: 10px;
+        }
+
+        ul {
+            color: white;
+        }
+
+        #score_button {
+            font-size: 1em;
+            margin-left: 20px;
+        }
+
+        #reset_quiz {
+            font-size: 1em;
+            margin-left: 50px;
+        }
+
+        img {
+            margin-left: 10px;
+        }
+
+        textarea{
+            font-size: 1em;
+            margin-left: 20px;
+        }
+    </style>
+
+    <script>
+
+        // Sets up the variable for the amount of questions there will be
+        var numberOfQuestions = 9;
+
+        // Declares the total number of answers (must be the same as total number of questions)
+        var answers = new Array(9);
+
+        // Declares the total possible number of choices for each question
+        var numberOfChoices = 4;
+
+        // Creates an array to store the correct answers for each question
+        answers[0] = "Case";
+        answers[1] = "Power Supply";
+        answers[2] = "Motherboard";
+        answers[3] = "Central Processing Unit";
+        answers[4] = "Heatsink";
+        answers[5] = "RAM"
+        answers[6] = "GPU"
+        answers[7] = "Optical Drive"
+        answers[8] = "SATA"
+
+        function getScore(form) {
+
+            //Sets up the variables for the score, current element and selection.
+            var score = 0;
+            var currentElement;
+            var currentSelection;
+
+            // For and If statements for cycling through selection & num of questions/choices
+            for (i = 0; i < numberOfQuestions; i++) {
+                currentElement = i * numberOfChoices;
+                for (j = 0; j < numberOfChoices; j++) {
+                    currentSelection = form.elements[currentElement + j];
+                    if (currentSelection.checked) {
+                        if (currentSelection.value == answers[i]) {
+                            score++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //Methid used for calculating the percentage of correct/incorrect answers
+            score = Math.round(score / numberOfQuestions * 100);
+            form.percentage.value = score + "%";
+
+            //Method for displayinf the correct answers
+            var correctAnswers = "";
+            for (i = 1; i <= numberOfQuestions; i++) {
+                correctAnswers += i + ". " + answers[i - 1] + "\r\n";
+            }
+            form.solutions.value = correctAnswers;
+        }
+
+    </script>
+</head>
+<body bgcolor="#33334c">
+
+    <h3>PC Builder Quiz</h3>
+
+    <form name="quiz">
+
+            <br><div>1.  To begin building a PC we have to start with the largest component with the least electronics. What is it?</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q1" value="Case">Case</li>
+                <li><input type="radio" name="q1" value="Motherboard">Motherboard</li>
+                <li><input type="radio" name="q1" value="Power Supply">Power Supply</li>
+                <li><input type="radio" name="q1" value="Graphics Card">Graphics Card</li>
+            </ul>
+        
+        
+            <br><div>2.  The next component that we need to install is the main component that powers the computer and has an impact on the noise levels.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q2" value="Motherboard">Motherboard</li>
+                <li><input type="radio" name="q2" value="Graphical Processing Unit">Graphical Processing Unit</li>
+                <li><input type="radio" name="q2" value="Power Supply">Power Supply</li>
+                <li><input type="radio" name="q2" value="Heatsink">Heatsink</li>
+            </ul>
+        
+
+            <br><div>3.  The next component that needs to be installed is the “spine” of the PC. All components connect to this and it can be easily damaged.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q3" value="Motherboard">Motherboard</li>
+                <li><input type="radio" name="q3" value="RAM">RAM</li>
+                <li><input type="radio" name="q3" value="Central Processing Unit">Central Processing Unit</li>
+                <li><input type="radio" name="q3" value="Power Supply">Power Supply</li>
+            </ul>
+
+            
+            <br><div>4.  Next, the brain of the PC will be installed. Usually made by either Intel or AMD, this component is responsible for executing a sequence of instructions called a program.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q4" value="Central Processing Unit">Central Processing Unit</li>
+                <li><input type="radio" name="q4" value="Optical Drive">Optical Drive</li>
+                <li><input type="radio" name="q4" value="Hard Drive">Hard Drive</li>
+                <li><input type="radio" name="q4" value="Motherboard">Motherboard</li>
+            </ul>
+        
+
+            <br><div>5.  To ensure the CPU stays cool, one of these will be installed over the top of it.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q5" value="Graphics Processing Unit">Graphics Processing Unit</li>
+                <li><input type="radio" name="q5" value="I/O Shield">I/O Shield</li>
+                <li><input type="radio" name="q5" value="Heatsink">Heatsink</li>
+                <li><input type="radio" name="q5" value="Voltage Regulator">Voltage Regulator</li>
+            </ul>
+
+
+            <br><div>6.  This next component is where the operating system, programs and data in current use are kept so they can be quickly reached by the processor.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q6" value="ROM">Read Only Memory</li>
+                <li><input type="radio" name="q6" value="Central Processing Unit">Central Processing Unit</li>
+                <li><input type="radio" name="q6" value="RAM">Random Access Memory</li>
+                <li><input type="radio" name="q6" value="The PCI Bus">The PCI Bus</li>
+            </ul>
+
+
+            <br><div>7.  This component is integral in ensuring the display and video data are processed efficiently. Usually with their own dedicated memory.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q7" value="CPU">Central Processing Unit</li>
+                <li><input type="radio" name="q7" value="GPU">Graphics Processing Unit</li>
+                <li><input type="radio" name="q7" value="ROM">Read Only Memory</li>
+                <li><input type="radio" name="q7" value="RAM">Random Access Memory</li>
+            </ul>
+
+
+            <br><div>8.  This is used for playing DVDs, CDs or installing software from discs.</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q8" value="SSD">SSD</li>
+                <li><input type="radio" name="q8" value="HDD">Hard Disc Drive</li>
+                <li><input type="radio" name="q8" value="Optical Drive">Optical Drive</li>
+                <li><input type="radio" name="q8" value="Monitor">Monitor</li>
+            </ul>
+
+
+        <br><img src="quiz images/sata cable.jpg" alt="Sata Cable" align="left" width="400" height="300">
+        <p style="clear:both">
+            <br><div>9.  Can you identify what type of cable this is?</div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q9" value="USB 2.0">USB 2.0</li>
+                <li><input type="radio" name="q9" value="eSATA">eSATA</li>
+                <li><input type="radio" name="q9" value="SATA">SATA</li>
+                <li><input type="radio" name="q9" value="USB 3.0">USB 3.0</li>
+            </ul>
+        </p>
+
+            <br><div>10.  </div>
+            <ul style="margin-top: 1pt;">
+                <li><input type="radio" name="q10" value=""></li>
+                <li><input type="radio" name="q10" value=""></li>
+                <li><input type="radio" name="q10" value=""></li>
+                <li><input type="radio" name="q10" value=""></li>
+            </ul>
+
+        <!--Add the functionality for the buttons "Check Score" and "Reset Quiz"-->
+        <br><input type="button" id="score_button" value="Check Your Score" onClick="getScore(this.form)">
+        <input type="reset" id="reset_quiz" value="Reset Quiz">
+        <p>
+            <div>Your Result = <strong><input class="bgclr" type="text" size="5" name="percentage" disabled></strong></div><br><br>
+            <h4>Correct Answers:</h4><br>
+            <textarea class="bgclr" name="solutions" wrap="hard" rows="15" cols="100" disabled></textarea>
+    </form>
+    <p>
+</body>
+</html>

@@ -1,0 +1,465 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>PC Deconstructor</title>
+    <!-- Babylon.js -->
+    <script src="babylon.2.4.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+   
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        #instructions_l1 {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 2em;
+        }
+
+        #instructions_l2 {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            color: white;
+            font-size: 2em;
+        }
+
+        #instructions_l3 {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            color: white;
+            font-size: 2em;
+        }
+
+        #instructions_r1 {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2em;
+        }
+        #button {
+            width: 6em;
+            border: 3px solid red;
+            background: #e8e8e8;
+            border-radius: 5px;
+            position:absolute;
+            top: 660px;
+            right: 20px;
+        }
+        a {
+            display: block;
+            width: 100%;
+            line-height: 2em;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        #canvas2D {
+            text-wrap: normal;
+        }
+
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+    <div id="instructions_l1">Select a component</div>
+    <div id="instructions_l2">Rotate to view</div>
+    <div id="instructions_l3">Move into position</div>
+    <div id="instructions_r1">Select a component from the list below</div>
+    <div id="button"><a href="Quiz.html">Try the Quiz!</a></div>
+
+    $('body').append('<button id="motherboard_button" style="position: absolute; right: 20px; top: 100px; font-size: 1em;">Display Motherboard</button>');
+    $('body').append('<button id="cpu_button" style="position: absolute; right: 20px; top: 140px; font-size: 1em;">Display CPU</button>');
+    $('body').append('<button id="heatsink_button" style="position: absolute; right: 20px; top: 180px; font-size: 1em;">Display Heatsink</button>');
+    $('body').append('<button id="ram1_button" style="position: absolute; right: 20px; top: 220px; font-size: 1em;">Display RAM</button>');
+    $('body').append('<button id="gpu_button" style="position: absolute; right: 20px; top: 260px; font-size: 1em;">Display Graphics Card</button>');
+    $('body').append('<button id="hdd_button" style="position: absolute; right: 20px; top: 300px; font-size: 1em;">Display Hard Drive</button>');
+    $('body').append('<button id="psu_button" style="position: absolute; right: 20px; top: 340px; font-size: 1em;">Display Power Supply</button>');
+
+    $('body').append('<button id="arc_camera" style="position: absolute; right: 20px; top: 480px; font-size: 1em;">Arc Rotate Camera</button>');
+    $('body').append('<button id="free_camera" style="position: absolute; right: 20px; top: 520px; font-size: 1em;">Free Camera</button>');
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            //Get the canvas DOM element
+            var canvas = document.getElementById("renderCanvas");
+
+            //Load the 3d engine
+            var engine = new BABYLON.Engine(canvas, true);
+
+            //Creates a basic scene
+            var createScene = function () {
+                var scene = new BABYLON.Scene(engine);
+
+                //Enable collisions
+                scene.collisionsEnabled = true;
+
+                //Adding a light
+                var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(20, 20, 100), scene);
+
+                //Adding an Arc Rotate Camera
+                var arcCamera = new BABYLON.ArcRotateCamera("arcCamera", Math.PI / 2 * 3, Math.PI / 2, 150, BABYLON.Vector3.Zero(), scene);
+                arcCamera.setPosition(new BABYLON.Vector3(-100, 50, -150));
+                arcCamera.checkCollisions = true;
+                arcCamera.collisionRadius = new BABYLON.Vector3(3, 3, 3)
+                //camera.attachControl(canvas, false);
+
+                arcCamera.lowerBetaLimit = 0.1;
+                arcCamera.upperBetaLimit = (Math.PI / 2) * 0.99;
+                arcCamera.lowerRadiusLimit = 20;
+
+                //Free Camera
+                var freeCamera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(-100, 20, 0), scene);
+                freeCamera.rotation = new BABYLON.Vector3(10, 0, -30);
+                //freeCamera.setTarget(BABYLON.Vector3.Zero());
+
+                // Ground
+                var ground = BABYLON.Mesh.CreateGround("ground", 1000, 1000, 1, scene, false);
+                var groundMaterial = new BABYLON.StandardMaterial("ground", scene);
+                groundMaterial.specularColor = BABYLON.Color3.Black();
+                ground.material = groundMaterial;
+                ground.checkCollisions = true;
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                
+                // The first parameter can be used to specify which mesh to import. Here we import all meshes
+                // "" = import all meshes, "case/" = the folder it's located, "case.babylon" = name of the file
+                BABYLON.SceneLoader.ImportMesh("", "case/", "case5.babylon", scene, function (newMeshes) {
+                    var pc_case = newMeshes[0];
+                    pc_case.position = new BABYLON.Vector3(0, 0, 15);
+                    pc_case.checkCollisions = true;
+                    //Set the position of the camera to the first imported mesh
+                    arcCamera.target = newMeshes[0];
+
+                    for (var i = 0; i < newMeshes.length; i++) {
+                        newMeshes[i].isPickable = true;
+                        prepareButton(pc_case, " PC Case \n\n This is the house of all the components \n It can come in many different sizes and shapes including \n > Small Form Factor \n > Mini Tower \n > Mid Tower \n > Full Tower");
+                    }
+                });
+
+                //GPU .babylon to import
+                document.getElementById("gpu_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "gpu/", "gpu4.babylon", scene, function (newMeshes) {
+                        var gpu2 = newMeshes[0];
+                        gpu2.position = new BABYLON.Vector3(-76, 2, -5);
+                        //gpu2.checkCollisions = true;
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " GPU (Graphics Processing Unit) \n\n The GPU is used for accelerating image output to a display. \n They are very efficient at manipulating computer graphics \n and are more effective than general purpose CPUs \n at processing large blocks of data");
+                        }
+                    });
+                });
+                
+                //PSU .babylon to import
+                document.getElementById("psu_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "psu/", "psu.babylon", scene, function (newMeshes) {
+                        var psu = newMeshes[0];
+                        psu.position = new BABYLON.Vector3(-40, 0, 0);
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " PSU (Power Supply) \n\n The Power Supply plays an important part in running a PC \n It gives all the components the power they need to operate \n It can also play a large part in the overall sound levels \n of the PC.");
+                        }
+                    });
+                });
+
+                //RAM .babylon to import
+                document.getElementById("ram1_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "ram1/", "ram_single.babylon", scene, function (newMeshes) {
+                        var ram_single = newMeshes[0];
+                        ram_single.position = new BABYLON.Vector3(-70, 15, -5);
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " RAM (Random Access Memory) \n\n The RAM module is installed in the RAM slots of the \n motherboard.\n When a program is opened, it is loaded from the hard drive \n into the RAM as it is much faster. \n It allows the programs to run with no lag time. \n Usually the more RAM a computer has, the greater the\n effect it has on it's speed.");
+                        }
+                    });
+                });
+
+                //HDD .babylon to import
+                document.getElementById("hdd_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "hdd/", "hdd.babylon", scene, function (newMeshes) {
+                        var hdd = newMeshes[0];
+                        hdd.position = new BABYLON.Vector3(-40, 15, 0);
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " HDD (Hard Disk Drive) \n\n Used to store data for the computer and typically come \n in either 3.5inch for desktops with speeds of 7,200 RPM \n and 2.5inch for laptops with typical speeds of 5,400 RPM. \n The data is stored on a stack of disks mounted inside \n a solid encasement.");
+                        }
+                    });
+                });
+
+                //Motherboard .babylon to import
+                document.getElementById("motherboard_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "motherboard/", "motherboard2.babylon", scene, function (newMeshes) {
+                        var motherboard2 = newMeshes[0];
+                        motherboard2.position = new BABYLON.Vector3(-10, 13, 10);
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " Motherboard \n\n A printed circuit board containing connectors for the \n main components of a computer. \n They come in many different sizes with the most \n common sizes being Standard-ATX, Micro-ATX and \n Mini-ITX. \n Attached to the motherboard you'll find the CPU, ROM, \n RAM expansion slots, PCI slots and USB ports. \n The motherboard is what makes the rest of the \n components work together.");
+                        }
+                    });
+                });
+
+                //Heatsink .babylon to import
+                document.getElementById("heatsink_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "heatsink/", "heatsink2.babylon", scene, function (newMeshes) {
+                        var heatsink = newMeshes[0];
+                        heatsink.position = new BABYLON.Vector3(-55, 5, -1);
+                        heatsink.checkCollisions = true;
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " Heatsink \n\n The Heatsink is an electronic device that contains a fan \n to keep a hot component such as the CPU cool \n There are two types of heat sink: active and passive. \n\n Active: utilises power and usually has a fan. \n Passive: Made from aluminium with no mechanical parts, \n it dissipates heat through convection \n\n It is placed on top of the CPU and draws it's heat away.");
+                        }
+                    });
+                });
+
+                //CPU .babylon to import
+                document.getElementById("cpu_button").addEventListener("click", function () {
+                    BABYLON.SceneLoader.ImportMesh("", "cpu/", "cpu2.babylon", scene, function (newMeshes) {
+                        var cpu = newMeshes[0];
+                        cpu.position = new BABYLON.Vector3(-85, 15, -5);
+
+                        for (var i = 0; i < newMeshes.length; i++) {
+                            newMeshes[i].isPickable = true;
+                            prepareButton(newMeshes[i], " CPU (Central Processing Unit) \n\n Also known as a processor, it is an electronic circuit \n that can execute computer programs. \n CPUs are manufactured almost exclusively by Intel and \n AMD with Intel's most popular series being the i3, i5 and i7 \n while the most popular AMD CPUs are the the A-Series \n A4, A6, A8 and A10. \n CPUs can be overclocked to produce more \n performance than standard.");
+                        }
+                    });
+                });
+
+                //Move the light with the camera
+                scene.registerBeforeRender(function () {
+                    light.position = arcCamera.position;
+                });
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                //Camera swap on button click 
+                //Arc Rotate button changes to arcCamera
+                document.getElementById("arc_camera").addEventListener("click", function () {
+                    scene.activeCamera = arcCamera;
+                });
+               
+                //Free Camera button changes to freeCamera
+                document.getElementById("free_camera").addEventListener("click", function () {
+                    scene.activeCamera = freeCamera;
+                    freeCamera.attachControl(canvas, true);
+
+                    /*scene.registerBeforeRender(function () {
+                    light.position = freeCamera.position;
+                    });*/
+                });
+                    
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                //Events for moving a mesh along vertical Y-axis
+                //Declare canvas, starting point and current mesh
+                var canvas = engine.getRenderingCanvas();
+                var startingPoint;
+                var currentMesh;
+
+                var getGroundPosition = function () {
+                    //Use a predicate to get position on the ground
+                    var pickinfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh == ground; });//Ensures only picked mesh is allowed
+                    if (pickinfo.hit) {
+                        return pickinfo.pickedPoint;
+                    }
+                    return null;
+                }
+
+                var onPointerDown = function (evt) {
+                    if (evt.button !== 0) {
+                        return;
+                    }
+
+                    //Check if we are under a mesh
+                    var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh !== ground; });
+                    if (pickInfo.hit) {
+                        currentMesh = pickInfo.pickedMesh;
+                        startingPoint = getGroundPosition(evt);
+
+                        if (startingPoint) { //Camera needs to be disconnected from the canvas when moving object
+                            setTimeout(function () {
+                                arcCamera.detachControl(canvas);
+                            }, 0);
+                        }
+                    }
+                }
+
+                var onPointerUp = function () {
+                    if (startingPoint) {
+                        arcCamera.attachControl(canvas, true);
+                        startingPoint = null;
+                        return;
+                    }
+                }
+
+                var onPointerMove = function (evt) {
+                    if (!startingPoint) {
+                        return;
+                    }
+
+                    var current = getGroundPosition(evt);
+
+                    if (!current) {
+                        return;
+                    }
+
+                    var diff = current.subtract(startingPoint);
+                    
+                    //If...else statement for when the ctrl key is pressed
+                    if (evt.ctrlKey)
+                        currentMesh.position.addInPlace(new BABYLON.Vector3(0, diff.z, 0));//Add diff.z into Y-axis
+                    else
+                        currentMesh.position.addInPlace(diff);//If ctrl not clicked then continue as usual
+
+                    startingPoint = current;
+                }
+
+                canvas.addEventListener("pointerdown", onPointerDown, false);
+                canvas.addEventListener("pointerup", onPointerUp, false);
+                canvas.addEventListener("pointermove", onPointerMove, false);
+
+                scene.onDispose = function () {
+                canvas.removeEventListener("pointerdown", onPointerDown);
+                canvas.removeEventListener("pointerup", onPointerUp);
+                canvas.removeEventListener("pointermove", onPointerMove);
+                }
+                
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                // Events for rotating a mesh in different directions using the ctrl key
+                var canvas = engine.getRenderingCanvas();
+                var currentMesh;
+                var shiftPressed = 0;
+
+                var onPointerDown = function (e) {
+                    if (e.button !== 0) {
+                        return;
+                    }
+
+                    //Detect the browser and verison 
+                    if (parseInt(navigator.appVersion) > 3) {
+
+                        var evt = e ? e : window.event;
+                        dragInit = { x: evt.x, y: evt.y };
+                        //if else statement for if the shift button is selected
+                        if (navigator.appName == "Netscape" && parseInt(navigator.appVersion) == 4) {//Gets the browser version
+                            var mString = (e.modifiers + 32).toString(2).substring(3, 6);
+                            shiftPressed = (mString.charAt(1) == "1");
+                            self.status = "modifiers = " + e.modifiers + " (" + mString + ")"
+                        }
+                        else {
+                            shiftPressed = evt.shiftKey;
+                            self.status = "" //status refers to status bar to detect mouse events
+                            + ", shiftKey=" + shiftPressed
+                        }
+                    }
+
+                    // check if we clicked on a mesh
+                    var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh !== ground; });
+                    if (pickInfo.hit) {
+                        currentMesh = pickInfo.pickedMesh;
+
+                        //If a mesh is selected then rotate it
+                        if (!currentMesh.rotationQuaternion) {
+                            currentMesh.rotationQuaternion = BABYLON.Quaternion.RotationYawPitchRoll(
+                                currentMesh.rotation.y,
+                                currentMesh.rotation.x,
+                                currentMesh.rotation.z
+                            );
+                        }
+
+                        //If shift is selected then rotate the mesh 180 degrees with 6 mouse button clicks
+                        if (shiftPressed) {
+                            currentMesh.rotate(BABYLON.Axis.Y, Math.PI / 6, BABYLON.Space.Local);
+                        }
+                        else {
+                        }
+                    }
+
+                    return true;
+                }
+
+                canvas.addEventListener("pointerdown", onPointerDown, false);
+                scene.onDispose = function () {
+                    canvas.removeEventListener("pointerdown", onPointerDown);
+                }
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                //Canvas 2d panel which will display a description of a component when clicked
+
+                //Sets up a text message before a mesh has been clicked
+                var text2D = new BABYLON.Text2D("Click on a component for more information", {
+                    id: "text",
+                    marginAlignment: "h: left, v:top",
+                    fontName: "14pt Arial",
+                });
+
+                //This will create the 2d panel which will not move from the bottom left
+                var canvas2D = new BABYLON.ScreenSpaceCanvas2D(scene, {
+                    id: "ScreenCanvas",
+                    size: new BABYLON.Size(500, 200),
+                    enableInteraction: true,
+                    backgroundFill: "#4040408F",
+                    backgroundRoundRadius: 10,
+                    //sets the children to the text2D which contains the information
+                    children: [
+                        text2D
+                    ]
+                });
+
+                //Sets up an action manager which will register the mouse click for displaying the text when clicked
+                var prepareButton = function (mesh, text) {
+                    mesh.actionManager = new BABYLON.ActionManager(scene);
+                    mesh.actionManager.registerAction(
+                        new BABYLON.SetValueAction(
+                            BABYLON.ActionManager.OnPickTrigger,
+                            text2D,
+                            "text",
+                            text)
+                        );
+                }
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                return scene;
+                    }
+                
+                //Creates the render loop for the scene
+                var scene = createScene();
+                engine.runRenderLoop(function () {
+                    scene.render();
+                });
+
+                //Watch for browser/canvas resize events
+                window.addEventListener("resize", function () {
+                    engine.resize();
+                });
+        });
+    </script>
+</body>
+</html>
