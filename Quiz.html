@@ -183,12 +183,10 @@
             <input type="reset" id="reset_quiz" value="Reset Quiz">
             
             
-            <!--Adds the functionality for displaying the correct answers-->
+            <!--Adds the functionality for displaying result-->
         <p>
             <div>Your Result = <strong><input class="bgclr" type="text" size="5" name="percentage" disabled></strong></div><br><br>
             <a href="index.html">Home</a>
-            <h4>Correct Answers:</h4><br>
-            <textarea class="bgclr" name="solutions" wrap="hard" rows="15" cols="100" disabled></textarea>
     </form>
     <p>
 <script>
@@ -238,13 +236,6 @@
             //Method used for calculating the percentage of correct/incorrect answers
             score = Math.round(score / numberOfQuestions * 100);
             form.percentage.value = score + "%";
-
-            //Method for displaying the correct answers
-            var correctAnswers = "";
-            for (i = 1; i <= numberOfQuestions; i++) {
-                correctAnswers += i + ". " + answers[i - 1] + "\r\n";
-            }
-            form.solutions.value = correctAnswers;
         }
 
         </script>
