@@ -25,6 +25,11 @@
             margin-left: 20px;
         }
 
+        div img {
+            display: inline;
+            padding-right: 20px;
+        }
+
         li {
             margin-top: 10px;
         }
@@ -51,68 +56,26 @@
             font-size: 1em;
             margin-left: 20px;
         }
-    </style>
 
-    <script>
-
-        // Sets up the variable for the amount of questions there will be
-        var numberOfQuestions = 9;
-
-        // Declares the total number of answers (must be the same as total number of questions)
-        var answers = new Array(9);
-
-        // Declares the total possible number of choices for each question
-        var numberOfChoices = 4;
-
-        // Creates an array to store the correct answers for each question
-        answers[0] = "Case";
-        answers[1] = "Power Supply";
-        answers[2] = "Motherboard";
-        answers[3] = "Central Processing Unit";
-        answers[4] = "Heatsink";
-        answers[5] = "RAM"
-        answers[6] = "GPU"
-        answers[7] = "Optical Drive"
-        answers[8] = "SATA"
-
-        function getScore(form) {
-
-            //Sets up the variables for the score, current element and selection.
-            var score = 0;
-            var currentElement;
-            var currentSelection;
-
-            // For and If statements for cycling through selection & num of questions/choices
-            for (i = 0; i < numberOfQuestions; i++) {
-                currentElement = i * numberOfChoices;
-                for (j = 0; j < numberOfChoices; j++) {
-                    currentSelection = form.elements[currentElement + j];
-                    if (currentSelection.checked) {
-                        if (currentSelection.value == answers[i]) {
-                            score++;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            //Methid used for calculating the percentage of correct/incorrect answers
-            score = Math.round(score / numberOfQuestions * 100);
-            form.percentage.value = score + "%";
-
-            //Method for displayinf the correct answers
-            var correctAnswers = "";
-            for (i = 1; i <= numberOfQuestions; i++) {
-                correctAnswers += i + ". " + answers[i - 1] + "\r\n";
-            }
-            form.solutions.value = correctAnswers;
+        a {
+            color: white;
+            font-size: 1.5em;
+            width: 10%;
+            line-height: 2em;
+            margin-left: 20px;
+            text-align: center;
+            text-decoration: underline;
+            border-radius: 5px;
         }
 
-    </script>
+    </style>
+
+    
 </head>
 <body bgcolor="#33334c">
+    
 
-    <h3>PC Builder Quiz</h3>
+    <h3>PC Deconstructor Quiz</h3>
 
     <form name="quiz">
 
@@ -190,7 +153,7 @@
 
         <br><img src="quiz images/sata cable.jpg" alt="Sata Cable" align="left" width="400" height="300">
         <p style="clear:both">
-            <br><div>9.  Can you identify what type of cable this is?</div>
+            <br><div>9.  Can you identify what type the above cable is?</div>
             <ul style="margin-top: 1pt;">
                 <li><input type="radio" name="q9" value="USB 2.0">USB 2.0</li>
                 <li><input type="radio" name="q9" value="eSATA">eSATA</li>
@@ -199,22 +162,91 @@
             </ul>
         </p>
 
-            <br><div>10.  </div>
+        <br><br>
+        <div>
+            <img src="quiz images/port 1.jpg" alt="Port 1" align="left"/>
+            <img src="quiz images/port 2.png" alt="Port 2" align="left"/>
+            <img src="quiz images/port 3.png" alt="Port 3" align="left" width="200" height="60"/>
+            <img src="quiz images/port 4.png" alt="Port 4" align="left"/>
+        </div>
+        <p style="clear:both">
+            <br><div>10.  In order to install the HDD it must be connected to the motherboard. Can you identify which socket the HDD cable attaches to?</div>
             <ul style="margin-top: 1pt;">
-                <li><input type="radio" name="q10" value=""></li>
-                <li><input type="radio" name="q10" value=""></li>
-                <li><input type="radio" name="q10" value=""></li>
-                <li><input type="radio" name="q10" value=""></li>
+                <li><input type="radio" name="q10" value="Image 1">Image 1</li>
+                <li><input type="radio" name="q10" value="Image 2">Image 2</li>
+                <li><input type="radio" name="q10" value="Image 3">Image 3</li>
+                <li><input type="radio" name="q10" value="Image 4">Image 4</li>
             </ul>
 
-        <!--Add the functionality for the buttons "Check Score" and "Reset Quiz"-->
-        <br><input type="button" id="score_button" value="Check Your Score" onClick="getScore(this.form)">
-        <input type="reset" id="reset_quiz" value="Reset Quiz">
+            <!--Add the functionality for the buttons "Check Score" and "Reset Quiz"-->
+            <br><input type="button" id="score_button" value="Check Your Score" onClick="getScore(this.form)">
+            <input type="reset" id="reset_quiz" value="Reset Quiz">
+            
+            
+            <!--Adds the functionality for displaying the correct answers-->
         <p>
             <div>Your Result = <strong><input class="bgclr" type="text" size="5" name="percentage" disabled></strong></div><br><br>
+            <a href="index.html">Home</a>
             <h4>Correct Answers:</h4><br>
             <textarea class="bgclr" name="solutions" wrap="hard" rows="15" cols="100" disabled></textarea>
     </form>
     <p>
+<script>
+
+        // Sets up the variable for the amount of questions there will be
+        var numberOfQuestions = 10;
+
+        // Declares the total number of answers (must be the same as total number of questions)
+        var answers = new Array(10);
+
+        // Declares the total possible number of choices for each question
+        var numberOfChoices = 4;
+
+        // Creates an array to store the correct answers for each question
+        answers[0] = "Case";
+        answers[1] = "Power Supply";
+        answers[2] = "Motherboard";
+        answers[3] = "Central Processing Unit";
+        answers[4] = "Heatsink";
+        answers[5] = "RAM"
+        answers[6] = "GPU"
+        answers[7] = "Optical Drive"
+        answers[8] = "SATA"
+        answers[9] = "Image 4"
+
+        function getScore(form) {
+
+            //Sets up the variables for the score, current element and selection.
+            var score = 0;
+            var currentElement;
+            var currentSelection;
+
+            // For and If statements for cycling through selection & num of questions/choices
+            for (i = 0; i < numberOfQuestions; i++) {
+                currentElement = i * numberOfChoices;
+                for (j = 0; j < numberOfChoices; j++) {
+                    currentSelection = form.elements[currentElement + j];
+                    if (currentSelection.checked) {
+                        if (currentSelection.value == answers[i]) {
+                            score++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //Method used for calculating the percentage of correct/incorrect answers
+            score = Math.round(score / numberOfQuestions * 100);
+            form.percentage.value = score + "%";
+
+            //Method for displaying the correct answers
+            var correctAnswers = "";
+            for (i = 1; i <= numberOfQuestions; i++) {
+                correctAnswers += i + ". " + answers[i - 1] + "\r\n";
+            }
+            form.solutions.value = correctAnswers;
+        }
+
+        </script>
 </body>
 </html>
