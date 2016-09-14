@@ -82,7 +82,7 @@
 <body>
     <canvas id="renderCanvas"></canvas>
     <div id="welcome_message">Welcome to the PC Deconstructor</div>
-    <div id="instructions_l1">Select a case and Motherboard</div>
+    <div id="instructions_l1">Select a case and motherboard</div>
     <div id="instructions_r1">Select a component</div>
     <div id="change_camera">Change camera view</div>
     <div id="quiz_button"><a href="Quiz.html">Try the Quiz!</a></div>
@@ -145,13 +145,12 @@
                 ground.material = groundMaterial;
                 ground.checkCollisions = true;
                                                   
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 
                 //Method to let microATX case button be clicked only once
-                var microATX_case_btn_counter = 0;
                 document.getElementById("microATX_case_btn").addEventListener("click", function () {
-                    if (microATX_case_btn_counter > 0) { return false; }
-                            microATX_case_btn_counter++;
+                    document.getElementById("microATX_case_btn").disabled = true;
+                    document.getElementById("midtower_case_btn").disabled = true;
 
                     //MicroATX case .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "case/", "case5.babylon", scene, function (newMeshes) {
@@ -169,10 +168,9 @@
                 });
 
                 //Method to let midtower case button be clicked only once
-                var midtower_case_btn_counter = 0;
                 document.getElementById("midtower_case_btn").addEventListener("click", function () {
-                    if (midtower_case_btn_counter > 0) { return false; }
-                            midtower_case_btn_counter++;
+                    document.getElementById("midtower_case_btn").disabled = true;
+                    document.getElementById("microATX_case_btn").disabled = true;
 
                     //Mid-tower PC case mesh to import
                     BABYLON.SceneLoader.ImportMesh("", "case mid-tower/", "case_mid-tower.babylon", scene, function (newMeshes) {
@@ -190,17 +188,14 @@
                 });
 
                 //Method to let GPU button be clicked only once
-                var gpu_button_counter = 0;
                 document.getElementById("gpu_button").addEventListener("click", function () {
-                    if (gpu_button_counter > 0) { return false; }
-                            gpu_button_counter++;
+                    document.getElementById("gpu_button").disabled = true;
 
                     //GPU .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "gpu/", "gpu5.babylon", scene, function (newMeshes) {
                         var gpu = newMeshes[0];
                         gpu.position = new BABYLON.Vector3(-100, 2, 0);
                         gpu.checkCollisions = true;
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
@@ -210,10 +205,9 @@
                 });
                 
                 //Method to let PSU button be clicked only once
-                var psu_button_counter = 0;
                 document.getElementById("psu_button").addEventListener("click", function () {
-                    if (psu_button_counter > 0) { return false; }
-                            psu_button_counter++;
+                    document.getElementById("psu_button").disabled = true;
+
 
                     //PSU .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "psu/", "psu.babylon", scene, function (newMeshes) {
@@ -229,10 +223,8 @@
                 });
 
                 //Method to let RAM button be clicked only once
-                var ram_button_counter = 0;
                 document.getElementById("ram_button").addEventListener("click", function () {
-                    if (ram_button_counter > 3) { return false; }
-                            ram_button_counter++;
+                    document.getElementById("ram_button").disabled = true;
 
                     //RAM .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "ram1/", "ram_single.babylon", scene, function (newMeshes) {
@@ -389,7 +381,7 @@
                         currentMesh = pickInfo.pickedMesh;
                         startingPoint = getGroundPosition();
 
-                        if (startingPoint) { //Camera needs to be disconnected from the canvas when moving object
+                        if (startingPoint) { 
                             setTimeout(function () {
                                 arcCamera.detachControl(canvas);
                             }, 0);
