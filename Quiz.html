@@ -79,6 +79,7 @@
 
     <form name="quiz">
 
+            <!--Sets up the 10 questions and 4 possible answers with radio buttons-->
             <br><div>1.  To begin building a PC we have to start with the largest component with the least electronics. What is it?</div>
             <ul style="margin-top: 1pt;">
                 <li><input type="radio" name="q1" value="Case">Case</li>
@@ -190,11 +191,10 @@
     </form>
     <p>
 <script>
-
         // Sets up the variable for the amount of questions there will be
         var numberOfQuestions = 10;
 
-        // Declares the total number of answers (must be the same as total number of questions)
+        // Declares the total number of answers which must be the same as total number of questions
         var answers = new Array(10);
 
         // Declares the total possible number of choices for each question

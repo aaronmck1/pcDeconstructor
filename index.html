@@ -127,15 +127,12 @@
                 arcCamera.setPosition(new BABYLON.Vector3(-100, 50, -150));
                 arcCamera.checkCollisions = true;
                 arcCamera.collisionRadius = new BABYLON.Vector3(3, 3, 3)
-                //camera.attachControl(canvas, false);
-
-                arcCamera.lowerBetaLimit = 0.1;
+                arcCamera.lowerBetaLimit = 0.1; //Sets lower collision limit with ground
                 arcCamera.upperBetaLimit = (Math.PI / 2) * 0.99;
                 arcCamera.lowerRadiusLimit = 20;
 
                 //Free Camera
                 var freeCamera = new BABYLON.FreeCamera("freeCamera", new BABYLON.Vector3(-100, 50, -50), scene);
-                //freeCamera.rotation = new BABYLON.Vector3(10, 0, -30);
                 freeCamera.setTarget(BABYLON.Vector3.Zero());
 
                 // Ground
@@ -147,10 +144,11 @@
                                                   
                 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 
-                //Method to let microATX case button be clicked only once
+                //Method to let microATX case button be clicked only once. Disables other buttons when clicked
                 document.getElementById("microATX_case_btn").addEventListener("click", function () {
                     document.getElementById("microATX_case_btn").disabled = true;
                     document.getElementById("midtower_case_btn").disabled = true;
+                    document.getElementById("ATXmobo_btn").disabled = true;
 
                     //MicroATX case .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "case/", "case5.babylon", scene, function (newMeshes) {
@@ -158,11 +156,12 @@
                         pc_case.position = new BABYLON.Vector3(-20, 0, -60);
                         pc_case.checkCollisions = true;
                         //Set the position of the camera to the first imported mesh
-                        //arcCamera.target = newMeshes[0];
+                        arcCamera.target = newMeshes[0];
 
+                        //Method for displaying text in the canvas2d panel
                         for (var i = 0; i < newMeshes.length; i++) {
-                            newMeshes[i].isPickable = true;
-                            prepareButton(pc_case, " Micro-ATX PC Case \n\n The Micro-ATX case offers a compact size.....");
+                            newMeshes[i].isPickable = true; //Ensures the mesh is pickable
+                            prepareButton(pc_case, " Micro-ATX PC Case \n\n The Micro-ATX case offers a compact size for users with \n limited space. \n A microATX motherboard is essential to use in this case \n due to it's compact size. \n Although this case is smaller than a midtower case, \n it can still house a full size graphics card and power supply.");
                         }
                     });
                 });
@@ -171,18 +170,19 @@
                 document.getElementById("midtower_case_btn").addEventListener("click", function () {
                     document.getElementById("midtower_case_btn").disabled = true;
                     document.getElementById("microATX_case_btn").disabled = true;
+                    document.getElementById("microATX_mobo_btn").disabled = true;
 
                     //Mid-tower PC case mesh to import
                     BABYLON.SceneLoader.ImportMesh("", "case mid-tower/", "case_mid-tower.babylon", scene, function (newMeshes) {
                         var midtower_case = newMeshes[0];
-                        midtower_case.position = new BABYLON.Vector3(-20, 0, 15);
+                        midtower_case.position = new BABYLON.Vector3(-20, 0, -60);
                         midtower_case.checkCollisions = true;
                         //Set the position of the camera to the first imported mesh
-                        //arcCamera.target = newMeshes[0];
+                        arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(midtower_case, " Mid-Tower PC Case \n\n The Mid-Tower case can fit full ATX motherboards and also smaller Micro-ATX motherboards. The bigger size of case allows for a more modular build as there is more space to work with");
+                            prepareButton(midtower_case, " Mid-Tower PC Case \n\n The Mid-Tower case can fit full ATX motherboards and \n also smaller Micro-ATX motherboards. \n The bigger size of case allows for a more modular build \n as there is more space to work with. \n A midtower case provides enough space for customisation \n such as water cooling");
                         }
                     });
                 });
@@ -199,7 +199,7 @@
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " GPU (Graphics Processing Unit) \n\n The GPU is used for accelerating image output to a display. \n They are very efficient at manipulating computer graphics \n and are more effective than general purpose CPUs \n at processing large blocks of data");
+                            prepareButton(gpu, " GPU (Graphics Processing Unit) \n\n The GPU is used for accelerating image output to a display. \n They are very efficient at manipulating computer graphics \n and are more effective than general purpose CPUs \n at processing large blocks of data. \n There are a large amount of manufacturers who release \n graphics cards, most of which are based of Nvidia \n and AMD cards");
                         }
                     });
                 });
@@ -213,130 +213,115 @@
                     BABYLON.SceneLoader.ImportMesh("", "psu/", "psu.babylon", scene, function (newMeshes) {
                         var psu = newMeshes[0];
                         psu.position = new BABYLON.Vector3(-60, 0, 0);
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " PSU (Power Supply) \n\n The Power Supply plays an important part in running a PC \n It gives all the components the power they need to operate \n It can also play a large part in the overall sound levels \n of the PC.");
+                            prepareButton(psu, " PSU (Power Supply) \n\n The Power Supply plays an important part in running a PC. \n It gives all the components the power they need to \n operate and maintain suitable temperatures. \n It can also play a large part in the overall sound levels \n of the PC.");
                         }
                     });
                 });
 
                 //Method to let RAM button be clicked only once
+                var ram_button_counter = 0;
                 document.getElementById("ram_button").addEventListener("click", function () {
-                    document.getElementById("ram_button").disabled = true;
+                    if (ram_button_counter > 3) { return false; }
+                    ram_button_counter++;
 
                     //RAM .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "ram1/", "ram_single.babylon", scene, function (newMeshes) {
                         var ram_single = newMeshes[0];
                         ram_single.position = new BABYLON.Vector3(-75, 15, -5);
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " RAM (Random Access Memory) \n\n The RAM module is installed in the RAM slots of the \n motherboard.\n When a program is opened, it is loaded from the hard drive \n into the RAM as it is much faster. \n It allows the programs to run with no lag time. \n Usually the more RAM a computer has, the greater the\n effect it has on it's speed.");
+                            prepareButton(ram_single, " RAM (Random Access Memory) \n\n The RAM module is installed in the RAM slots of the \n motherboard.\n When a program is opened, it is loaded from the hard drive \n into the RAM as it is much faster. \n It allows the programs to run with no lag time. \n Usually the more RAM a computer has, the greater the\n effect it has on it's speed.");
                         }
                     });
                 });
 
                 //Method to let HDD button be clicked only once
-                var hdd_button_counter = 0;
                 document.getElementById("hdd_button").addEventListener("click", function () {
-                    if (hdd_button_counter > 0) { return false; }
-                            hdd_button_counter++;
+                    document.getElementById("hdd_button").disabled = true;
 
                     //HDD .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "hdd/", "hdd.babylon", scene, function (newMeshes) {
                         var hdd = newMeshes[0];
                         hdd.position = new BABYLON.Vector3(-60, 15, 0);
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " HDD (Hard Disk Drive) \n\n Used to store data for the computer and typically come \n in either 3.5inch for desktops with speeds of 7,200 RPM \n and 2.5inch for laptops with typical speeds of 5,400 RPM. \n The data is stored on a stack of disks mounted inside \n a solid encasement.");
+                            prepareButton(hdd, " HDD (Hard Disk Drive) \n\n Used to store data for the computer and typically come \n in either 3.5inch for desktops with speeds of 7,200 RPM \n and 2.5inch for laptops with typical speeds of 5,400 RPM. \n The data is stored on a stack of disks mounted inside \n a solid encasement.");
                         }
                     });
                 });
 
                 //Method to let microATX mobo button be clicked only once
-                var microATX_mobo_btn_counter = 0;
                 document.getElementById("microATX_mobo_btn").addEventListener("click", function () {
-                    if (microATX_mobo_btn_counter > 0) { return false; }
-                            microATX_mobo_btn_counter++;
+                    document.getElementById("microATX_mobo_btn").disabled = true;
 
                     //Motherboard .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "motherboard/", "motherboard3.babylon", scene, function (newMeshes) {
                         var motherboard = newMeshes[0];
                         motherboard.position = new BABYLON.Vector3(-75, 13, 25);
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " Motherboard \n\n A printed circuit board containing connectors for the \n main components of a computer. \n They come in many different sizes with the most \n common sizes being Standard-ATX, Micro-ATX and \n Mini-ITX. \n Attached to the motherboard you'll find the CPU, ROM, \n RAM expansion slots, PCI slots and USB ports. \n The motherboard is what makes the rest of the \n components work together.");
+                            prepareButton(motherboard, " microATX Motherboard \n\n This motherboard is a smaller version of the ATX \n motherboard. \n Although this motherboard is most commonly found in \n compact desktop PCs, it can also be used in a lot of \n mid tower PCs. \n The motherboard is what connects to the rest of the \n components, allowing them to work together.");
                         }
                     });
                 });
 
                 //Method to let ATX mobo button be clicked only once
-                var ATXmobo_btn_counter = 0;
                 document.getElementById("ATXmobo_btn").addEventListener("click", function () {
-                    if (ATXmobo_btn_counter > 0) { return false; }
-                            ATXmobo_btn_counter++;
+                    document.getElementById("ATXmobo_btn").disabled = true;
 
                     //ATX Motherboard .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "motherboard ATX/", "motherboard_ATX.babylon", scene, function (newMeshes) {
                         var motherboardATX = newMeshes[0];
                         motherboardATX.position = new BABYLON.Vector3(-60, 16, 25);
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " Motherboard ATX \n\n The Standard ATX motherboard is the standard size of motherboard for full tower desktop PCs.");
+                            prepareButton(motherboardATX, " Motherboard ATX \n\n The Standard ATX motherboard is the most common size \n of motherboard for full and mid tower desktop PCs. \n This motherboard is similar to the microATX motherboard \n with small differences such as number of expansion slots \n and power consumption. \n Attached to the motherboard you'll find the CPU, ROM, \n RAM expansion slots, PCI slots and USB ports. ");
                         }
                     });
                 });
 
                 //Method to let heatsink button be clicked only once
-                var heatsink_button_counter = 0;
                 document.getElementById("heatsink_button").addEventListener("click", function () {
-                    if (heatsink_button_counter > 0) { return false; }
-                            heatsink_button_counter++;
+                    document.getElementById("heatsink_button").disabled = true;
 
                     //Heatsink .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "heatsink/", "heatsink2.babylon", scene, function (newMeshes) {
                         var heatsink = newMeshes[0];
                         heatsink.position = new BABYLON.Vector3(-75, 5, -1);
-                        //arcCamera.target = newMeshes[0];
                         
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " Heatsink \n\n The Heatsink is an electronic device that contains a fan \n to keep a hot component such as the CPU cool \n There are two types of heat sink: active and passive. \n\n Active: utilises power and usually has a fan. \n Passive: Made from aluminium with no mechanical parts, \n it dissipates heat through convection \n\n It is placed on top of the CPU and draws it's heat away.");
+                            prepareButton(heatsink, " Heatsink \n\n The Heatsink is an electronic device that contains a fan \n to keep a hot component such as the CPU cool \n There are two types of heat sink: active and passive. \n\n Active: utilises power and usually has a fan. \n Passive: Made from aluminium with no mechanical parts, \n it dissipates heat through convection \n It is placed on top of the CPU and draws it's heat away.");
                         }
                     });
                 });
 
                 //Method to let CPU button be clicked only once
-                var cpu_button_counter = 0;
                 document.getElementById("cpu_button").addEventListener("click", function () {
-                    if (cpu_button_counter > 0) { return false; }
-                            cpu_button_counter++;
+                    document.getElementById("cpu_button").disabled = true;
 
                     //CPU .babylon to import
                     BABYLON.SceneLoader.ImportMesh("", "cpu/", "cpu3.babylon", scene, function (newMeshes) {
                         var cpu = newMeshes[0];
                         cpu.position = new BABYLON.Vector3(-100, 15, -5);
-                        //arcCamera.target = newMeshes[0];
 
                         for (var i = 0; i < newMeshes.length; i++) {
                             newMeshes[i].isPickable = true;
-                            prepareButton(newMeshes[i], " CPU (Central Processing Unit) \n\n Also known as a processor, it is an electronic circuit \n that can execute computer programs. \n CPUs are manufactured almost exclusively by Intel and \n AMD with Intel's most popular series being the i3, i5 and i7 \n while the most popular AMD CPUs are the the A-Series \n A4, A6, A8 and A10. \n CPUs can be overclocked to produce more \n performance than standard.");
+                            prepareButton(cpu, " CPU (Central Processing Unit) \n\n Also known as a processor, it is an electronic circuit \n that can execute computer programs. \n CPUs are manufactured almost exclusively by Intel and \n AMD with Intels most popular series being the i3, i5 and i7 \n while the most popular AMD CPUs are the the A-Series \n A4, A6, A8 and A10. \n CPUs can be overclocked to produce more \n performance than standard.");
                         }
                     });
                 });
 
                 //Move the light with the camera
                 scene.registerBeforeRender(function () {
-                    light.position = arcCamera.position;
+                    light.position = arcCamera.position; //Sets the lights position the same as the cameras position
                 });
 
 
@@ -362,6 +347,7 @@
                 var startingPoint;
                 var currentMesh;
 
+                //Gets the position of the ground
                 var getGroundPosition = function () {
                     var pickinfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh == ground; });//Ensures only picked mesh is allowed
                     if (pickinfo.hit) {
@@ -370,17 +356,20 @@
                     return null;
                 }
 
+
                 var onPointerDown = function (evt) {
                     if (evt.button !== 0) {
                         return;
                     }
 
-                    //Check if the mouse pointer is under a mesh
+                    //Checks if the mouse pointer is under a mesh
                     var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh !== ground; });
                     if (pickInfo.hit) {
                         currentMesh = pickInfo.pickedMesh;
                         startingPoint = getGroundPosition();
 
+                        //If the mouse is under a mesh, the camera must be detached 
+                        //until the mesh is placed in a new position
                         if (startingPoint) { 
                             setTimeout(function () {
                                 arcCamera.detachControl(canvas);
@@ -389,6 +378,7 @@
                     }
                 }
 
+                //When the mouse is released, the camera is reattached to the canvas
                 var onPointerUp = function () {
                     if (startingPoint) {
                         arcCamera.attachControl(canvas, true);
@@ -412,13 +402,14 @@
                     
                     //If...else statement for when the ctrl key is pressed
                     if (evt.ctrlKey)
-                        currentMesh.position.addInPlace(new BABYLON.Vector3(0, diff.z, 0));//Add diff.z into Y-axis
+                        currentMesh.position.addInPlace(new BABYLON.Vector3(0, diff.z, 0)); //Add diff.z into Y-axis
                     else
-                        currentMesh.position.addInPlace(diff);//If ctrl not clicked then continue as usual
+                        currentMesh.position.addInPlace(diff); //If Ctrl not clicked then continue as usual
 
                     startingPoint = current;
                 }
 
+                //Adds event listeners
                 canvas.addEventListener("pointerdown", onPointerDown, false);
                 canvas.addEventListener("pointerup", onPointerUp, false);
                 canvas.addEventListener("pointermove", onPointerMove, false);
@@ -446,20 +437,20 @@
 
                         var evt = e ? e : window.event;
                         dragInit = { x: evt.x, y: evt.y };
-                        //if else statement for if the shift button is selected
-                        if (navigator.appName == "Netscape" && parseInt(navigator.appVersion) == 4) {//Gets the browser version
+                        //if else statement for if the Shift button is selected
+                        if (navigator.appName == "Netscape" && parseInt(navigator.appVersion) == 4) { //Gets the browser version
                             var mString = (e.modifiers + 32).toString(2).substring(3, 6);
                             shiftPressed = (mString.charAt(1) == "1");
                             self.status = "modifiers = " + e.modifiers + " (" + mString + ")"
                         }
                         else {
                             shiftPressed = evt.shiftKey;
-                            self.status = "" //status refers to status bar to detect mouse events
+                            self.status = "" //Status refers to status bar to detect mouse events
                             + ", shiftKey=" + shiftPressed
                         }
                     }
 
-                    // check if we clicked on a mesh
+                    //Check if we clicked on a mesh
                     var pickInfo = scene.pick(scene.pointerX, scene.pointerY, function (mesh) { return mesh !== ground; });
                     if (pickInfo.hit) {
                         currentMesh = pickInfo.pickedMesh;
@@ -473,7 +464,7 @@
                             );
                         }
 
-                        //If shift is selected then rotate the mesh 180 degrees with 6 mouse button clicks
+                        //If Shift is selected then rotate the mesh 180 degrees with 6 mouse button clicks
                         if (shiftPressed) {
                             currentMesh.rotate(BABYLON.Axis.Y, Math.PI / 6, BABYLON.Space.Local);
                         }
@@ -484,6 +475,7 @@
                     return true;
                 }
 
+                //Canvas event listeners
                 canvas.addEventListener("pointerdown", onPointerDown, false);
                 scene.onDispose = function () {
                     canvas.removeEventListener("pointerdown", onPointerDown);
@@ -491,7 +483,7 @@
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-                //Canvas 2d panel which will display a description of a component when clicked
+                //Canvas2d panel which will display a description of a component when clicked
 
                 //Sets up a text message before a mesh has been clicked
                 var text2D = new BABYLON.Text2D("\n Click on a component for more information \n\n Ctrl + mouse will move model up or down \n\n Shift + mouse will rotate a model \n\n Refreshing the browser will reset the scene", {
@@ -507,7 +499,7 @@
                     enableInteraction: true,
                     backgroundFill: "#4040408F",
                     backgroundRoundRadius: 10,
-                    //sets the children to the text2D which contains the information
+                    //Sets the children to the text2D which contains the information
                     children: [
                         text2D
                     ]
